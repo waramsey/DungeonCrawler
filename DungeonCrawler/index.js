@@ -19,7 +19,7 @@ io.on('connection', function(socket){
     console.log('made socket connection', socket.id);
 
     socket.on('move', function(data){
-        //check if move is valid
+        //check if move is valid (need to know player's location)
         //move if valid
         //if moved, enemies go
     })

@@ -16,7 +16,7 @@
 
             ctx.save()
             ctx.translate(0,0)
-            ctx.scale(0.8,0.8)
+            ctx.scale(1,1)
             for (let i = 0; i < map.length; i++) {
                 for (let j = 0; j < map[i].length; j++) {
                     switch (map[i].charAt(j)) {
@@ -24,15 +24,11 @@
                             ctx.fillStyle = 'black'
                             ctx.strokeStyle = 'black'
                             break;
-                        case 'O' :
-                            ctx.fillStyle = 'grey'
-                            ctx.strokeStyle = 'silver'
-                            break;
                         case 'W' :
                             ctx.fillStyle = 'black'
                             ctx.strokeStyle = 'grey'
                             break;
-                        default :
+                        default : //also includes O
                             ctx.fillStyle = 'grey'
                             ctx.strokeStyle = 'silver'
                     }
@@ -50,7 +46,7 @@
             ctx.restore()
 
             ctx.save()
-            ctx.scale(0.8,0.8)
+            ctx.scale(1,1)
             for (let i = 0; i < map.length; i++) {
                 for (let j = 0; j < map[i].length; j++) {
                     let circle = true;
@@ -59,7 +55,7 @@
                             ctx.fillStyle = 'maroon'
                             ctx.strokeStyle = 'red'
                             break;
-                        case 'T' :
+                        case 'D' :
                             ctx.fillStyle = 'white'
                             ctx.strokeStyle = 'white'
                             break;
@@ -80,6 +76,16 @@
             }
             ctx.restore()
         }
+
+        // function makeMap(mapFile) {
+        //     const fs = require('fs')
+
+        //     fs.readFile(mapFile, (err, data) => {
+        //         if (err) throw err;
+
+        //         map = data.split('\n')
+        //     })
+        // }
 
         draw();
     </script>
