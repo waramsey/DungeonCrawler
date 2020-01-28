@@ -46,25 +46,30 @@ document.body.addEventListener('keyup', function(event) {
 function draw() {
     
     var fill, stroke;
+    // var tile;
     for (let i = 0; i < map.length; i++) {
         for (let j = 0; j < map[i].length; j++) {
             switch (map[i][j]) {
                 case 'X' :
                     fill = 'black'
                     stroke = 'black'
+                    // tile = new Empty(i,j);
                     break;
                 case 'O' :
                     fill = 'grey'
                     stroke = 'silver'
+                    // tile = new Floor(i,j);
                     break;
                 case 'W' :
                     fill = 'black'
                     stroke = 'grey'
+                    // tile = new Wall(i,j);
                     break;
                 default :
                     fill = 'grey'
                     stroke = 'silver'
             }
+            
             
             drawTile(i,j,fill,stroke)
         }
@@ -134,14 +139,14 @@ function drawTile(x,y,fill,stroke) {
     ctx.restore()
 }
 
-function makeMap(mapFile) {
-    const fs = require('fs')
+// function makeMap(mapFile) {
+//     const fs = require('fs')
 
-    fs.readFile(mapFile, (err, data) => {
-        if (err) throw err;
+//     fs.readFile(mapFile, (err, data) => {
+//         if (err) throw err;
 
-        map = data.split('\n')
-    })
-}
+//         map = data.split('\n')
+//     })
+// }
 
 draw();
