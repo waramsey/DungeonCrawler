@@ -15,6 +15,7 @@ let map = [['X','X','X','X','X','W','W','W','W','W','W','W','W','W','X','X','X',
 ['X','X','X','X','X','W','W','W','O','O','O','W','W','W','X','X','X','X','X'],
 ['X','X','X','X','X','X','X','W','W','W','W','W','X','X','X','X','X','X','X']]
 //Map has to be a 2d array...
+let dungeon;
 
 let pLoc = [2,12]; //right, down
 
@@ -44,67 +45,68 @@ document.body.addEventListener('keyup', function(event) {
 
 
 function draw() {
-    
-    var fill, stroke;
-    // var tile;
-    for (let i = 0; i < map.length; i++) {
-        for (let j = 0; j < map[i].length; j++) {
-            switch (map[i][j]) {
-                case 'X' :
-                    fill = 'black'
-                    stroke = 'black'
-                    // tile = new Empty(i,j);
-                    break;
-                case 'O' :
-                    fill = 'grey'
-                    stroke = 'silver'
-                    // tile = new Floor(i,j);
-                    break;
-                case 'W' :
-                    fill = 'black'
-                    stroke = 'grey'
-                    // tile = new Wall(i,j);
-                    break;
-                default :
-                    fill = 'grey'
-                    stroke = 'silver'
-            }
-            
-            
-            drawTile(i,j,fill,stroke)
-        }
+    dungeon = new Array(9);
+    for (var i = 0; i < 9; i++) {
+        dungeon[i] = new Array(9);
     }
+    DunGenStart();
+    console.log(dungeon)
+    // var fill, stroke;
+    // for (let i = 0; i < map.length; i++) {
+    //     for (let j = 0; j < map[i].length; j++) {
+    //         switch (map[i][j]) {
+    //             case 'X' :
+    //                 fill = 'black'
+    //                 stroke = 'black'
+    //                 break;
+    //             case 'O' :
+    //                 fill = 'grey'
+    //                 stroke = 'silver'
+    //                 break;
+    //             case 'W' :
+    //                 fill = 'black'
+    //                 stroke = 'grey'
+    //                 break;
+    //             default :
+    //                 fill = 'grey'
+    //                 stroke = 'silver'
+    //         }
+            
+            
+    //         drawTile(i,j,fill,stroke)
+    //     }
+    // }
 
-    ctx.save()
-    ctx.scale(1,1)
-    for (let i = 0; i < map.length; i++) {
-        for (let j = 0; j < map[i].length; j++) {
-            let circle = true;
-            switch(map[i][j]) {
-                case 'E' :
-                    ctx.fillStyle = 'maroon'
-                    ctx.strokeStyle = 'red'
-                    break;
-                case 'T' :
-                    ctx.fillStyle = 'white'
-                    ctx.strokeStyle = 'white'
-                    break;
-                case 'P' :
-                    ctx.fillStyle = 'navy'
-                    ctx.strokeStyle = 'aqua'
-                    break;
-                default :
-                    circle = false;
-            }
-            if (circle) {
-                ctx.beginPath()
-                ctx.arc(j*50+23,i*50+23,22,0, Math.PI * 2, true)
-                ctx.stroke()
-                ctx.fill()
-            }    
-        }
-    }
-    ctx.restore()
+    // ctx.save()
+    // ctx.scale(1,1)
+    // for (let i = 0; i < map.length; i++) {
+    //     for (let j = 0; j < map[i].length; j++) {
+    //         let circle = true;
+    //         switch(map[i][j]) {
+    //             case 'E' :
+    //                 ctx.fillStyle = 'maroon'
+    //                 ctx.strokeStyle = 'red'
+    //                 break;
+    //             case 'T' :
+    //                 ctx.fillStyle = 'white'
+    //                 ctx.strokeStyle = 'white'
+    //                 break;
+    //             case 'P' :
+    //                 ctx.fillStyle = 'navy'
+    //                 ctx.strokeStyle = 'aqua'
+    //                 break;
+    //             default :
+    //                 circle = false;
+    //         }
+    //         if (circle) {
+    //             ctx.beginPath()
+    //             ctx.arc(j*50+23,i*50+23,22,0, Math.PI * 2, true)
+    //             ctx.stroke()
+    //             ctx.fill()
+    //         }    
+    //     }
+    // }
+    // ctx.restore()
 }
 
 function moveEntity(x,y,fill,stroke) {
@@ -139,14 +141,104 @@ function drawTile(x,y,fill,stroke) {
     ctx.restore()
 }
 
-// function makeMap(mapFile) {
-//     const fs = require('fs')
+function DunGenStart() {
+    var room = {
+        right:4,
+        down:4,
+        paths:[true,true,true,true] //goes clockwise
+    };
 
-//     fs.readFile(mapFile, (err, data) => {
-//         if (err) throw err;
+    dungeon[4][4] = room; //save room at location
 
-//         map = data.split('\n')
-//     })
-// }
+    ctx.save()
+    ctx.fillStyle = 'red'
+    ctx.strokeStyle = 'black'
+    ctx.fillRect(room.down*50,room.right*50,45,45)
+    ctx.strokeRect(room.down*50,room.right*50,45,45)
+    ctx.restore()
+
+    for (let i = 0; i < 4; i++) {
+        DunGen(room, i);
+    }
+}
+
+//opening determines which way the room is oriented
+function DunGen(previous, opening) {
+    var room = {
+        right:previous.right,
+        down:previous.down,
+        paths: determinePaths(opening)
+    };
+
+    switch (opening) {
+        case 0: //up
+            room.down--;
+            break;
+        case 1: //right
+            room.right++;
+            break;
+        case 2: //down
+            room.down++;
+            break;
+        case 3: //left
+            room.right--;
+            break;
+    }
+
+    dungeon[room.right][room.down] = room; //save room at location
+
+    for (let i = 0; i < 4; i++) {
+        if (room.paths[i]) {
+            DunGen(room, i);
+        }
+    }
+
+    ctx.save()
+    ctx.fillStyle = 'white'
+    ctx.strokeStyle = 'black'
+    ctx.fillRect(room.down*50,room.right*50,45,45)
+    ctx.strokeRect(room.down*50,room.right*50,45,45)
+    ctx.restore()
+}
+
+function determinePaths(entry) {
+    let temp;
+    let arr = [false,false,false,false]
+    switch (Math.floor(Math.random() * 10)) {
+        case 0: case 1: case 2: case 3:
+            temp = [false,false,false,false]
+            break;
+        case 4:
+            temp = [false,true,true,false]
+            break;
+        case 5:
+            temp = [false,true,false,true]
+            break;
+        case 6:
+            temp = [false,false,true,true]
+            break;
+        case 7:
+            temp = [false,false,false,true]
+            break;
+        case 8:
+            temp = [false,true,false,false]
+            break;
+        case 9:
+            temp = [false,false,true,false]
+            break;
+    }
+    for (let i = 0; i < 4; i++) {
+        arr[(entry + i) % 4] = temp[i]
+    }
+    return arr;
+}
+
+class Room {
+    constructor(right, down, paths) {
+        this.right = right;
+        this.down = down;
+        this.paths = paths;
+    }
+}
 
 draw();
