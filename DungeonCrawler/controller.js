@@ -51,62 +51,63 @@ function draw() {
     }
     DunGenStart();
     console.log(dungeon)
-    // var fill, stroke;
-    // for (let i = 0; i < map.length; i++) {
-    //     for (let j = 0; j < map[i].length; j++) {
-    //         switch (map[i][j]) {
-    //             case 'X' :
-    //                 fill = 'black'
-    //                 stroke = 'black'
-    //                 break;
-    //             case 'O' :
-    //                 fill = 'grey'
-    //                 stroke = 'silver'
-    //                 break;
-    //             case 'W' :
-    //                 fill = 'black'
-    //                 stroke = 'grey'
-    //                 break;
-    //             default :
-    //                 fill = 'grey'
-    //                 stroke = 'silver'
-    //         }
-            
-            
-    //         drawTile(i,j,fill,stroke)
-    //     }
-    // }
 
-    // ctx.save()
-    // ctx.scale(1,1)
-    // for (let i = 0; i < map.length; i++) {
-    //     for (let j = 0; j < map[i].length; j++) {
-    //         let circle = true;
-    //         switch(map[i][j]) {
-    //             case 'E' :
-    //                 ctx.fillStyle = 'maroon'
-    //                 ctx.strokeStyle = 'red'
-    //                 break;
-    //             case 'T' :
-    //                 ctx.fillStyle = 'white'
-    //                 ctx.strokeStyle = 'white'
-    //                 break;
-    //             case 'P' :
-    //                 ctx.fillStyle = 'navy'
-    //                 ctx.strokeStyle = 'aqua'
-    //                 break;
-    //             default :
-    //                 circle = false;
-    //         }
-    //         if (circle) {
-    //             ctx.beginPath()
-    //             ctx.arc(j*50+23,i*50+23,22,0, Math.PI * 2, true)
-    //             ctx.stroke()
-    //             ctx.fill()
-    //         }    
-    //     }
-    // }
-    // ctx.restore()
+    var fill, stroke;
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map[i].length; j++) {
+            switch (map[i][j]) {
+                case 'X' :
+                    fill = 'black'
+                    stroke = 'black'
+                    break;
+                case 'O' :
+                    fill = 'grey'
+                    stroke = 'silver'
+                    break;
+                case 'W' :
+                    fill = 'black'
+                    stroke = 'grey'
+                    break;
+                default :
+                    fill = 'grey'
+                    stroke = 'silver'
+            }
+            
+            
+            drawTile(i,j,fill,stroke)
+        }
+    }
+
+    ctx.save()
+    ctx.scale(1,1)
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map[i].length; j++) {
+            let circle = true;
+            switch(map[i][j]) {
+                case 'E' :
+                    ctx.fillStyle = 'maroon'
+                    ctx.strokeStyle = 'red'
+                    break;
+                case 'T' :
+                    ctx.fillStyle = 'white'
+                    ctx.strokeStyle = 'white'
+                    break;
+                case 'P' :
+                    ctx.fillStyle = 'navy'
+                    ctx.strokeStyle = 'aqua'
+                    break;
+                default :
+                    circle = false;
+            }
+            if (circle) {
+                ctx.beginPath()
+                ctx.arc(j*50+23,i*50+23,22,0, Math.PI * 2, true)
+                ctx.stroke()
+                ctx.fill()
+            }    
+        }
+    }
+    ctx.restore()
 }
 
 function moveEntity(x,y,fill,stroke) {
@@ -142,19 +143,15 @@ function drawTile(x,y,fill,stroke) {
 }
 
 function DunGenStart() {
-    var room = {
-        right:4,
-        down:4,
-        paths:[true,true,true,true] //goes clockwise
-    };
+    var room = new Room(4, 4, [true,true,true,true])
 
     dungeon[4][4] = room; //save room at location
 
     ctx.save()
     ctx.fillStyle = 'red'
     ctx.strokeStyle = 'black'
-    ctx.fillRect(room.down*50,room.right*50,45,45)
-    ctx.strokeRect(room.down*50,room.right*50,45,45)
+    ctx.fillRect(room.down*50+900,room.right*50,45,45)
+    ctx.strokeRect(room.down*50+900,room.right*50,45,45)
     ctx.restore()
 
     for (let i = 0; i < 4; i++) {
@@ -164,11 +161,7 @@ function DunGenStart() {
 
 //opening determines which way the room is oriented
 function DunGen(previous, opening) {
-    var room = {
-        right:previous.right,
-        down:previous.down,
-        paths: determinePaths(opening)
-    };
+    var room = new Room(previous.right, previous.down, determinePaths(opening))
 
     switch (opening) {
         case 0: //up
@@ -185,7 +178,7 @@ function DunGen(previous, opening) {
             break;
     }
 
-    dungeon[room.right][room.down] = room; //save room at location
+    dungeon[room.right][room.down] = room; //save room at location, SOMETIMES CAUSES BUGS?
 
     for (let i = 0; i < 4; i++) {
         if (room.paths[i]) {
@@ -196,8 +189,8 @@ function DunGen(previous, opening) {
     ctx.save()
     ctx.fillStyle = 'white'
     ctx.strokeStyle = 'black'
-    ctx.fillRect(room.down*50,room.right*50,45,45)
-    ctx.strokeRect(room.down*50,room.right*50,45,45)
+    ctx.fillRect(room.right*50+900,room.down*50,45,45)
+    ctx.strokeRect(room.right*50+900,room.down*50,45,45)
     ctx.restore()
 }
 
