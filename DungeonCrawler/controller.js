@@ -107,6 +107,7 @@ function draw() {
             }    
         }
     }
+    moveEntity(pLoc[0],pLoc[1],'navy','aqua')
     ctx.restore()
 }
 
